@@ -33,7 +33,8 @@ public class AFDMinimizer extends AFD {
                  */
                 Set<String> set1 = new HashSet<>();
                 for (String estados : afd.getEstados()) {
-                String to = afd.findTransicoes(estados, read);
+                //String to = afd.findTransicoes(estados, read);
+                Integer to = afd.obter_proximo_estado(estados, read);
                     if (queueElement.contains(to)) {
                         set1.add(estados);
                     }
@@ -105,7 +106,8 @@ public class AFDMinimizer extends AFD {
             }
 
             for (String read : afd.getAlfabeto()) {
-                Integer to = afd.findTransicoes(model, read);
+                Integer to = afd.obter_proximo_estado(model, read);
+                //Integer to = afd.findTransicoes(model, read);
                 for (Set<String> part2 : partition) {
                     if (part2.contains(to)) {
                         String toModel = part2.iterator().next();
@@ -141,7 +143,8 @@ public AFD n2Minimization(AFD afd) {
             // Busca transições de um determinado estado com um símbolo específico no autômato
             ArrayList<String> set1 = new ArrayList<>();
             for (String estado : afd.getEstados()) {
-                String to = afd.findTransicoes(estado, read);
+                Integer to = afd.obter_proximo_estado(estado, read);
+                //String to = afd.findTransicoes(estado, read);
                 if (queueElement.contains(to)) {
                     set1.add(estado);
                 }
@@ -181,7 +184,8 @@ public AFD n2Minimization(AFD afd) {
         }
 
         for (String read : afd.getAlfabeto()) {
-            Integer to = afd.findTransicoes(model, read);
+            Integer to = afd.obter_proximo_estado(model, read);
+            //Integer to = afd.findTransicoes(model, read);
             for (ArrayList<String> part2 : partition) {
                 if (part2.contains(to)) {
                     String toModel = part2.get(0);

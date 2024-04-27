@@ -31,7 +31,7 @@ public class AFD {
 
     // Recebe o estado e o simbolo lido e retorna o próxximo estado
 
-    public Integer obter_proximo_estado(Integer estadoAtual, String simbolo) {
+    public Integer obter_proximo_estado(String estadoAtual, String simbolo) {
         return transicoes.getOrDefault(new Pair<>(estadoAtual, simbolo), null);
     }
 
