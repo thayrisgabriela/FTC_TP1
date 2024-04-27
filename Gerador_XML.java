@@ -37,13 +37,13 @@ class Gerador_XML{
     
             // Obtendo os estados
             NodeList nodos_de_estados = document.getElementsByTagName("state");
-            ArrayList<Integer> estados = new ArrayList<>();
-            Integer estadoInicial = null;
-            ArrayList<Integer> estadosFinais = new ArrayList<>();
+            ArrayList<String> estados = new ArrayList<>();
+            String estadoInicial = null;
+            ArrayList<String> estadosFinais = new ArrayList<>();
 
             for (int i = 0; i < nodos_de_estados.getLength(); i++) {
                 Element stateElement = (Element) nodos_de_estados.item(i);
-                int id = Integer.parseInt(stateElement.getAttribute("id"));
+                String id = stateElement.getAttribute("id");
                 estados.add(id);
                 if (stateElement.getElementsByTagName("initial").getLength() > 0) {
                     estadoInicial = id;
@@ -55,20 +55,23 @@ class Gerador_XML{
             
             // Obtendo as transições
             NodeList transitionNodes = document.getElementsByTagName("transition");
-            Map<Pair<Integer, Character>, Integer> transicoes = new HashMap<>();
-            ArrayList<Character> alfabeto = new ArrayList<>();
+            Map<Pair<Integer, String>, Integer> transicoes = new HashMap<>();
+            ArrayList<String> alfabeto = new ArrayList<>();
             for (int i = 0; i < transitionNodes.getLength(); i++) {
                 Element transitionElement = (Element) transitionNodes.item(i);
                 
-                transitionElement.getElementsByTagName("from").item(0).getChildNodes().item(0).getNodeValue();
-                int from = Integer.parseInt(transitionElement.getElementsByTagName("from").item(0).getChildNodes().item(0).getNodeValue());
-                int to = Integer.parseInt(transitionElement.getElementsByTagName("to").item(0).getChildNodes().item(0).getNodeValue());
-                char read = transitionElement.getElementsByTagName("read").item(0).getChildNodes().item(0).getNodeValue().charAt(0);
-                transicoes.put(new Pair<>(from, read), to);
+                int from = Integer.parseInt(transitionElement.getElementsByTagName("from").item(0).getTextContent());
+                int to = Integer.parseInt(transitionElement.getElementsByTagName("to").item(0).getTextContent());
+                String read = transitionElement.getElementsByTagName("read").item(0).getTextContent();
+                
+                Pair<Integer, String> transitionPair = new Pair<>(from, read);
+                transicoes.put(transitionPair, to);
+                
                 if (!alfabeto.contains(read)) {
                     alfabeto.add(read);
                 }
             }
+            
             
             //System.out.println(estados);
             //System.out.println(estadoInicial);
@@ -76,6 +79,7 @@ class Gerador_XML{
             //System.out.println(alfabeto);
             //System.out.println(transicoes);
             return new AFD(estados, alfabeto, transicoes, estadoInicial, estadosFinais);
+            
             
         } catch (Exception e) {
             // TODO: handle exception
@@ -85,6 +89,7 @@ class Gerador_XML{
     }
     
     
+    @SuppressWarnings("unlikely-arg-type")
     public void escrever_xml(AFD afd){
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -105,15 +110,15 @@ class Gerador_XML{
             rootElement.appendChild(automatonElement);
 
             // Adicionando os estados
-            for (Integer estado : afd.getEstados()) {
+            for (String estado : afd.getEstados()) {
                 Element stateElement = doc.createElement("state");
                 stateElement.setAttribute("id", estado.toString());
                 stateElement.setAttribute("name", "q" + estado);
-                if (estado.equals(afd.getEstado_inicial())) {
+                if (estado.equals(afd.getEstadoInicial())) {
                     Element initialElement = doc.createElement("initial");
                     stateElement.appendChild(initialElement);
                 }
-                if (afd.getEstados_finais().contains(estado)) {
+                if (afd.getEstadosFinais().contains(estado)) {
                     Element finalElement = doc.createElement("final");
                     stateElement.appendChild(finalElement);
                 }
@@ -121,8 +126,8 @@ class Gerador_XML{
             }
 
             // Adicionando as transições
-            for (Map.Entry<Pair<Integer, Character>, Integer> entry : afd.getTransicoes().entrySet()) {
-                Pair<Integer, Character> origemSimbolo = entry.getKey();
+            for (Map.Entry<Pair<Integer, String>, Integer> entry : afd.getTransicoes().entrySet()) {
+                Pair<Integer, String> origemSimbolo = entry.getKey();
                 Integer destino = entry.getValue();
 
                 Element transitionElement = doc.createElement("transition");
