@@ -6,9 +6,9 @@ public class AFD {
 
     private ArrayList<String> estados = new ArrayList<String>();
     private ArrayList<String> alfabeto = new ArrayList<String>();
-    private Map<Pair<Integer, String>, Integer> transicoes = new HashMap<>();
-    private String estadoInicial;
-    private ArrayList<String> estadosFinais = new ArrayList<String>();
+    private Map<Pair<String, String>, String> transicoes = new HashMap<>();
+    private String estado_inicial;
+    private ArrayList<String> estados_finais = new ArrayList<String>();
 
     //Métodos Construtores
 
@@ -16,26 +16,33 @@ public class AFD {
         estados = new ArrayList<String>();
         alfabeto = new ArrayList<String>();
         transicoes = new HashMap<>();
-        estadosFinais = new ArrayList<String>();
-       // estadoInicial = new ArrayList<String>();
+        estados_finais = new ArrayList<String>();
     }
 
-    AFD(ArrayList<String> estados, ArrayList<String> alfabeto,Map<Pair<Integer, String>, Integer> transicoes,String estadoInicial,ArrayList<String> estadosFinais){
+    AFD(ArrayList<String> estados, ArrayList<String> alfabeto,Map<Pair<String, String>, String> transicoes,String estado_inicial,ArrayList<String> estados_finais){
         this.estados = estados;
         this.alfabeto = alfabeto;
         this.transicoes = transicoes;
-        this.estadoInicial = estadoInicial;
-        this.estadosFinais = estadosFinais;
+        this.estado_inicial = estado_inicial;
+        this.estados_finais = estados_finais;
     }
     
-
     // Recebe o estado e o simbolo lido e retorna o próxximo estado
 
-    public Integer obter_proximo_estado(String estadoAtual, String simbolo) {
+    public String obter_proximo_estado(String estadoAtual, String simbolo) {
         return transicoes.getOrDefault(new Pair<>(estadoAtual, simbolo), null);
     }
 
-
+    // 
+    public void adicionaEstado(String estado){
+        estados.add(estado);
+    }
+    public void adicionaEstadoFinal(String estado){
+        estados_finais.add(estado);
+    }
+    public void adicionaTransicao(String estadoorigem,String simbolo,String estadoDestino){
+        transicoes.put(new Pair<>(estadoorigem, simbolo), estadoDestino);
+    }
     // GETTERS E SETTERS
     public ArrayList<String> getEstados() {
         return estados;
@@ -53,49 +60,30 @@ public class AFD {
         this.alfabeto = alfabeto;
     }
 
-    public Map<Pair<Integer, String>, Integer> getTransicoes() {
+    public Map<Pair<String, String>, String> getTransicoes() {
         return transicoes;
     }
 
-    public void setTransicoes(Map<Pair<Integer, String>, Integer> transicoes) {
+    public void setTransicoes(Map<Pair<String, String>, String> transicoes) {
         this.transicoes = transicoes;
     }
 
-    public String getEstadoInicial() {
-        return estadoInicial;
+    public String getEstado_inicial() {
+        return estado_inicial;
     }
 
-    public void setEstadoInicial(String estadoInicial) {
-        this.estadoInicial = estadoInicial;
+    public void setEstado_inicial(String estado_inicial) {
+        this.estado_inicial = estado_inicial;
     }
 
-    public ArrayList<String> getEstadosFinais() {
-        return estadosFinais;
+    public ArrayList<String> getEstados_finais() {
+        return estados_finais;
     }
 
-    public void setEstadosFinais(ArrayList<String> estadosFinais) {
-        this.estadosFinais = estadosFinais;
+    public void setEstados_finais(ArrayList<String> estados_finais) {
+        this.estados_finais = estados_finais;
     }
+    
+    
 
-
-    public void addEstados(String estados) {
-        this.estados.add(estados);
-    }
-
-    public void addEstadosFinais(String estadosFinais) {
-        this.estadosFinais.add(estadosFinais);
-    }
-
-    public void addTransicoes(Integer from, String read, Integer to) {
-        this.transicoes.put(new Pair<>(from, read), to);
-    }
-
-    public void removeEstados(String estados) {
-        this.estados.remove(estados);
-    }
-
-    public void removeTransicoes(Integer from, String read) {
-        this.transicoes.remove(new Pair<>(from, read));
-    }
 }
-
