@@ -55,16 +55,16 @@ class Gerador_XML{
             
             // Obtendo as transições
             NodeList transitionNodes = document.getElementsByTagName("transition");
-            Map<Pair<Integer, String>, Integer> transicoes = new HashMap<>();
+            Map<Pair<String, String>, String> transicoes = new HashMap<>();
             ArrayList<String> alfabeto = new ArrayList<>();
             for (int i = 0; i < transitionNodes.getLength(); i++) {
                 Element transitionElement = (Element) transitionNodes.item(i);
                 
-                int from = Integer.parseInt(transitionElement.getElementsByTagName("from").item(0).getTextContent());
-                int to = Integer.parseInt(transitionElement.getElementsByTagName("to").item(0).getTextContent());
+                String from = transitionElement.getElementsByTagName("from").item(0).getTextContent();
+                String to = transitionElement.getElementsByTagName("to").item(0).getTextContent();
                 String read = transitionElement.getElementsByTagName("read").item(0).getTextContent();
                 
-                Pair<Integer, String> transitionPair = new Pair<>(from, read);
+                Pair<String, String> transitionPair = new Pair<>(from, read);
                 transicoes.put(transitionPair, to);
                 
                 if (!alfabeto.contains(read)) {
@@ -80,7 +80,6 @@ class Gerador_XML{
             //System.out.println(transicoes);
             return new AFD(estados, alfabeto, transicoes, estadoInicial, estadosFinais);
             
-            
         } catch (Exception e) {
             // TODO: handle exception
         }
@@ -89,8 +88,8 @@ class Gerador_XML{
     }
     
     
-    @SuppressWarnings("unlikely-arg-type")
-    public void escrever_xml(AFD afd){
+    
+    public void escrever_xml(AFD afd,String pathFile){
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -114,11 +113,11 @@ class Gerador_XML{
                 Element stateElement = doc.createElement("state");
                 stateElement.setAttribute("id", estado.toString());
                 stateElement.setAttribute("name", "q" + estado);
-                if (estado.equals(afd.getEstadoInicial())) {
+                if (estado.equals(afd.getEstado_inicial())) {
                     Element initialElement = doc.createElement("initial");
                     stateElement.appendChild(initialElement);
                 }
-                if (afd.getEstadosFinais().contains(estado)) {
+                if (afd.getEstados_finais().contains(estado)) {
                     Element finalElement = doc.createElement("final");
                     stateElement.appendChild(finalElement);
                 }
@@ -126,9 +125,9 @@ class Gerador_XML{
             }
 
             // Adicionando as transições
-            for (Map.Entry<Pair<Integer, String>, Integer> entry : afd.getTransicoes().entrySet()) {
-                Pair<Integer, String> origemSimbolo = entry.getKey();
-                Integer destino = entry.getValue();
+            for (Map.Entry<Pair<String, String>, String> entry : afd.getTransicoes().entrySet()) {
+                Pair<String, String> origemSimbolo = entry.getKey();
+                String destino = entry.getValue();
 
                 Element transitionElement = doc.createElement("transition");
 
@@ -153,7 +152,7 @@ class Gerador_XML{
             transformer.transform(new DOMSource(doc), new StreamResult(writer));
 
             String conteudo = writer.getBuffer().toString();
-            String caminhoArquivo = "AFD_Minimizado.jff";
+            String caminhoArquivo = pathFile;
             try (BufferedWriter wwriter = new BufferedWriter(new FileWriter(caminhoArquivo))) {
                 wwriter.write(conteudo);
                 System.out.println("Conteúdo foi escrito com sucesso no arquivo '" + caminhoArquivo + "'.");
