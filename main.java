@@ -16,7 +16,6 @@ class main{
         }
         
         
-      
 
         //Execução do algoritmo nLogn
         AFD afd = gerador.ler_xml(path_afd);
