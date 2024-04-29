@@ -16,12 +16,14 @@ public class nLOGn_Minimizer {
         List<Set<String>> particao = new ArrayList<>();
         particao.add(estadosFinais);
         particao.add(estadosNaoFinais);
+
         Queue<Set<String>> fila = new LinkedList<>();
         if (estadosFinais.size() <= estadosNaoFinais.size()) {
             fila.add(estadosFinais);
         } else {
             fila.add(estadosNaoFinais);
         }
+
         while (!fila.isEmpty()) {
             Set<String> elementoFila = fila.poll();
             for (String simbolo : automato.getAlfabeto()) {
@@ -41,7 +43,7 @@ public class nLOGn_Minimizer {
 
                     Set<String> diferenca = new HashSet<>(conjunto2);
                     diferenca.removeAll(conjunto1);
-                   
+
                     if (!intersecao.isEmpty() && !diferenca.isEmpty()) {
                         particao.remove(conjunto2);
                         particao.add(intersecao);
@@ -49,7 +51,7 @@ public class nLOGn_Minimizer {
 
                         if (fila.contains(conjunto2)) {
                             fila.remove(conjunto2);
-                           
+
                             if (intersecao.size() <= diferenca.size()) {
                                 fila.add(intersecao);
                                 fila.add(diferenca);
@@ -58,7 +60,7 @@ public class nLOGn_Minimizer {
                                 fila.add(intersecao);
                             }
                         } else {
-                           
+
                             if (intersecao.size() <= diferenca.size()) {
                                 fila.add(intersecao);
                             } else {

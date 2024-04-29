@@ -4,7 +4,7 @@ public class n2_Minimizer extends AFD {
     public ArrayList<String> minimizedEstados = new ArrayList<String>();
     public String minimizedEstadoInicial;
     public ArrayList<String> minimizedEstadosFinais = new ArrayList<String>();
-    private String from;
+
 
 
 public AFD n2Minimization(AFD afd) {
@@ -35,19 +35,38 @@ public AFD n2Minimization(AFD afd) {
                 }
             }
 
-            for (ArrayList<String> set2 : new ArrayList<>(partition)) {
-                ArrayList<String> intersection = new ArrayList<>(set1);
-                intersection.retainAll(set2);
-                
-                // Se a interseção não for vazia e a diferença também não
-                if (!intersection.isEmpty() && !set2.removeAll(set1)) {
-                    partition.add(new ArrayList<>(intersection));
-                    partition.add(new ArrayList<>(set2));
+                for (ArrayList<String> set2 : new ArrayList<>(partition)) {
+                    ArrayList<String> intersection = new ArrayList<>(set1);
+                    intersection.retainAll(set2);
 
-                    // Adiciona os conjuntos na fila
-                    queue.add(intersection.size() <= set2.size() ? intersection : set2);
+                    ArrayList<String> diff = new ArrayList<>(set2);
+                    diff.removeAll(set1);
+                    /* Verifica se a interseção e a diferença entre dois conjuntos não são vazias */
+
+                    if (!intersection.isEmpty() && !diff.isEmpty()) {
+                        partition.remove(set2);
+                        partition.add(intersection);
+                        partition.add(diff);
+                        if (queue.contains(set2)) {
+                            queue.remove(set2);
+                            //Adiciona o resultado da interseção e da diferença na fila, inserindo o menor conjunto primeiro
+                            if (intersection.size() <= diff.size()) {
+                                queue.add(intersection);
+                                queue.add(diff);
+                            } else {
+                                queue.add(diff);
+                                queue.add(intersection);
+                            }
+                        } else {
+                            //Adiciona na fila o conjunto menor entre os dois conjuntos, para manter a ordenação entre eles //
+                            if (intersection.size() <= diff.size()) {
+                                queue.add(intersection);
+                            } else {
+                                queue.add(diff);
+                            }
+                        }
+                    }
                 }
-            }
         }
     }
 
