@@ -10,36 +10,36 @@ import java.util.Set;
 public class nLOGn_Minimizer {
 
     public AFD minimizacaoNLogN(AFD automato) {
-        Set<Integer> estadosFinais = new HashSet<>(automato.getEstados_finais());
-        Set<Integer> estadosNaoFinais = new HashSet<>(automato.getEstados());
+        Set<String> estadosFinais = new HashSet<>(automato.getEstados_finais());
+        Set<String> estadosNaoFinais = new HashSet<>(automato.getEstados());
         estadosNaoFinais.removeAll(estadosFinais);
-        List<Set<Integer>> particao = new ArrayList<>();
+        List<Set<String>> particao = new ArrayList<>();
         particao.add(estadosFinais);
         particao.add(estadosNaoFinais);
-        Queue<Set<Integer>> fila = new LinkedList<>();
+        Queue<Set<String>> fila = new LinkedList<>();
         if (estadosFinais.size() <= estadosNaoFinais.size()) {
             fila.add(estadosFinais);
         } else {
             fila.add(estadosNaoFinais);
         }
         while (!fila.isEmpty()) {
-            Set<Integer> elementoFila = fila.poll();
-            for (Character simbolo : automato.getAlfabeto()) {
+            Set<String> elementoFila = fila.poll();
+            for (String simbolo : automato.getAlfabeto()) {
                 
-                Set<Integer> conjunto1 = new HashSet<>();
-                for (Integer estado : automato.getEstados()) {
-                    Integer destino = automato.obter_proximo_estado(estado, simbolo);
+                Set<String> conjunto1 = new HashSet<>();
+                for (String estado : automato.getEstados()) {
+                    String destino = automato.obter_proximo_estado(estado, simbolo);
                     if (elementoFila.contains(destino)) {
                         conjunto1.add(estado);
                     }
                 }
 
             
-                for (Set<Integer> conjunto2 : new ArrayList<>(particao)) {
-                    Set<Integer> intersecao = new HashSet<>(conjunto1);
+                for (Set<String> conjunto2 : new ArrayList<>(particao)) {
+                    Set<String> intersecao = new HashSet<>(conjunto1);
                     intersecao.retainAll(conjunto2);
 
-                    Set<Integer> diferenca = new HashSet<>(conjunto2);
+                    Set<String> diferenca = new HashSet<>(conjunto2);
                     diferenca.removeAll(conjunto1);
                    
                     if (!intersecao.isEmpty() && !diferenca.isEmpty()) {
@@ -73,11 +73,11 @@ public class nLOGn_Minimizer {
         AFD automatoMinimizado = new AFD();
         automatoMinimizado.setAlfabeto(automato.getAlfabeto());
 
-        for (Set<Integer> parte : particao) {
-            Integer modelo = parte.iterator().next();
+        for (Set<String> parte : particao) {
+            String modelo = parte.iterator().next();
             automatoMinimizado.adicionaEstado(modelo);
 
-            for (Integer estado : parte) {
+            for (String estado : parte) {
                 if (estado.equals(automato.getEstado_inicial())) {
                     automatoMinimizado.setEstado_inicial(modelo);
                 }
@@ -86,11 +86,11 @@ public class nLOGn_Minimizer {
                 }
             }
 
-            for (Character simbolo : automato.getAlfabeto()) {
-                Integer destino = automato.obter_proximo_estado(modelo, simbolo);
-                for (Set<Integer> parte2 : particao) {
+            for (String simbolo : automato.getAlfabeto()) {
+                String destino = automato.obter_proximo_estado(modelo, simbolo);
+                for (Set<String> parte2 : particao) {
                     if (parte2.contains(destino)) {
-                        Integer destinoModelo = parte2.iterator().next();
+                        String destinoModelo = parte2.iterator().next();
                         automatoMinimizado.adicionaTransicao(modelo, simbolo, destinoModelo);
                         break;
                     }
@@ -101,6 +101,3 @@ public class nLOGn_Minimizer {
         return automatoMinimizado;
     }
 }
-
-    
-
